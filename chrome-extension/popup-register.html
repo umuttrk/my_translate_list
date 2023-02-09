@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Register</title>
     <style>
         body {
             width: 100vw;
@@ -14,7 +14,7 @@
             overflow: hidden;
         }
 
-        div {
+        form {
             align-items: center;
             display: flex;
             width: 100%;
@@ -25,7 +25,21 @@
             box-sizing: border-box;
             background-color: #fcee54;
             flex-wrap: wrap;
-            transition-duration: 0.7s;
+        }
+
+        input {
+            margin: 10px;
+            font-size: 120%;
+            width: 75%;
+            height: 5%;
+            padding: 10px;
+            border: none;
+            font-family: monospace;
+            transition-duration: 0.3s;
+        }
+
+        input:focus {
+            transform: scale(1.2);
         }
 
         button {
@@ -39,31 +53,24 @@
             font-weight: bold;
             transition-duration: 0.3s;
             padding: 10px;
-            margin-top: 10%;
+            margin-top: 1%;
         }
 
-        span {
-            font-family: monospace;
-            font-weight: bold;
+        .white_placeholder::placeholder {
             color: white;
-            font-size: 6em;
-            text-shadow: 0px 0px 5px black;
-            transition-duration: 0.3s;
-        }
-
-        #name {
-            font-size: 4em;
-            max-width: 100%;
         }
     </style>
 </head>
 
 <body>
-    <div>
-        <span id="message">Welcome Back,</span><span id="name"></span>
-        <button type="submit">Sign Out</button>
-    </div>
-    <script src="./popup-welcome-back-script.js"></script>
+    <form>
+        <input type="first_name" name="first_name" id="first_name" placeholder="First Name">
+        <input type="last_name" name="last_name" id="last_name" placeholder="Last Name">
+        <input type="email" name="email" id="email" placeholder="Email">
+        <input type="password" name="password" id="password" placeholder="Password">
+        <button type="submit" id="register_button">Sign Up</button>
+    </form>
+    <script src="./popup-register.js"></script>
 </body>
 
 </html>

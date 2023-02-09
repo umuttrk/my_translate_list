@@ -19,7 +19,8 @@ button.addEventListener('mouseleave', () => {
 button.addEventListener('click', () => {
     chrome.runtime.sendMessage({message:"logout"},function (response) {
         if(response==="success"){
-          console.log('sign out  success');      
+          console.log('sign out  success'); 
+               window.location.replace('./popup-sign-in.html')
         }
     });
 });

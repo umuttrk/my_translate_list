@@ -14,7 +14,7 @@
             overflow: hidden;
         }
 
-        form {
+        #container {
             align-items: center;
             display: flex;
             width: 100%;
@@ -59,15 +59,20 @@
         .white_placeholder::placeholder {
             color: white;
         }
+        
     </style>
 </head>
 
 <body>
-    <form>
+    <div id="container">
         <input type="email" name="email" id="email" placeholder="Email">
         <input type="password" name="password" id="password" placeholder="Password">
-        <button type="submit">Sign In</button>
-    </form>
+        <button id="login_button" class="login" >Sign In</button>
+        <button type="button" id="register_button" class="register">Register</button>
+        <a href="./popup-sign-in.html">I've forgotten my password(not active)</a>
+        
+    </div>
+   
     <script src="./popup-sign-in-script.js"></script>
 </body>
 
