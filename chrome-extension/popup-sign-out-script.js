@@ -17,6 +17,7 @@ button.addEventListener('mouseleave', () => {
 });
 
 button.addEventListener('click', () => {
+    console.log('log out clicked');
     chrome.runtime.sendMessage({message:"logout"},function (response) {
         if(response==="success"){
           console.log('sign out  success'); 

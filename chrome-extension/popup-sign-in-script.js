@@ -68,7 +68,6 @@ document.querySelector('#container').querySelector(".login").addEventListener('c
     const pass = document.querySelector('#password').value;
 
     if (email && pass) {
-
         chrome.runtime.sendMessage({ message: "login", payload: { email, pass } }, function (response) {
             console.log('girdi');
             console.log(response);
