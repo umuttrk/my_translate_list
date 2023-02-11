@@ -22,7 +22,7 @@ function change_user_status(signIn, userInfo) {
         return fetch('http://localhost:3000/login', {
             method: 'GET',
             headers: {
-                'type':'login',
+                'type': 'login',
                 'Authorization': 'Basic ' + btoa(`${userInfo.email}:${userInfo.pass}`)
             },
         }).then(res => {
@@ -37,27 +37,30 @@ function change_user_status(signIn, userInfo) {
         }).catch(err => console.log(err));
     } else if (!signIn) {
         return new Promise(resolve => {
-            chrome.storage.local.get(['userStatus', 'email'], function (response, reject) {
+            chrome.storage.local.get(['userStatus', 'email'], async function (response, reject) {
                 console.log(`here? ` + response.email);
-                if (chrome.runtime.lastError) reject('fail');
-                if (response.userStatus === "undefined") reject('fail');
-                return fetch('http://localhost:3000/logout', {
-                    method: 'GET',
-                    headers: {
-                        'type':'register',
-                        'Authorization': 'Basic ' + btoa(`${response.email}:F@#$`)
-                    },
-                }).then(res => {
-                    if (res.status !== 200) reject('fail');
-                    chrome.storage.local.set({ userStatus: signIn, email: {} }, function (response) {
-                        if (chrome.runtime.lastError) reject('fail');
+                if (chrome.runtime.lastError) resolve('fail');
+                if (response.userStatus === "undefined") resolve('fail');
+                try {
+                    const res = await fetch('http://localhost:3000/logout', {
+                        method: 'GET',
+                        headers: {
+                            'type': 'register',
+                            'Authorization': 'Basic ' + btoa(`${response.email}:F@#$`)
+                        },
+                    });
+                    if (res.status !== 200)
+                         resolve('fail');
+                    chrome.storage.local.set({ userStatus: signIn, email: {} }, function (response_1) {
+                        if (chrome.runtime.lastError)
+                            resolve('fail');
                         user_signed_in = signIn;
                         resolve('success');
                     });
-                }).catch(err => {
+                } catch (err) {
                     console.log('hata');
-                    console.log(err)
-                });
+                    console.log(err);
+                }
             });
         })
     }
@@ -108,7 +111,49 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             .then(res => sendResponse(res))
             .catch(err => console.log(err));
         return true;
-    } else if (request.message === "userStatus") {
-
+    } else if (request.message === "register") {
+        console.log(request.payload);
+        register(request.payload)
+            .then(res => sendResponse(res))
+            .catch(err => console.log(err));
+        return true;
     }
 });
+
+
+
+function register(userInfo) {
+    var credsObj = {
+        first_name: userInfo.first_name,
+        last_name: userInfo.last_name,
+        email: userInfo.email,
+        pass: userInfo.pass
+    }
+
+    return new Promise(async resolve => {
+        try {
+            console.log(credsObj);
+            const res = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa(`${userInfo.email}:${userInfo.pass}`)
+                }, body:  JSON.stringify(credsObj)
+            });
+            if (res.status === 400)
+                resolve('bad_request');
+            if (res.status === 409)
+                resolve('duplicate_mail');
+            if (res.status === 200) {
+                chrome.storage.local.set({ userStatus: true, email: userInfo.email }, function (response) {
+                    if (chrome.runtime.lastError)
+                        resolve('fail');
+                    user_signed_in = true;
+                    resolve('success');
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    });
+}

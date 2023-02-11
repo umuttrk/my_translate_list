@@ -5,7 +5,7 @@ register_button.addEventListener('mouseover', () => {
     register_button.style.color = 'white';
     register_button.style.transform = 'scale(1.3)';
 
-    document.querySelector('form').style.backgroundColor = '#d3f674';
+    document.querySelector('div').style.backgroundColor = '#d3f674';
 
     document.querySelectorAll('input').forEach(input => {
         input.style.backgroundColor = 'black';
@@ -19,7 +19,7 @@ register_button.addEventListener('mouseleave', () => {
     register_button.style.color = 'black';
     register_button.style.transform = 'scale(1)';
 
-    document.querySelector('form').style.backgroundColor = '#fcee54';
+    document.querySelector('div').style.backgroundColor = '#fcee54';
 
     document.querySelector('#email').classList.remove('white_placeholder');
     document.querySelector('#password').classList.remove('white_placeholder');
@@ -35,7 +35,7 @@ login_button.addEventListener('mouseover', () => {
     login_button.style.color = 'white';
     login_button.style.transform = 'scale(1.3)';
 
-    document.querySelector('form').style.backgroundColor = '#d3f674';
+    document.querySelector('div').style.backgroundColor = '#d3f674';
 
     document.querySelectorAll('input').forEach(input => {
         input.style.backgroundColor = 'black';
@@ -49,7 +49,7 @@ login_button.addEventListener('mouseleave', () => {
     login_button.style.color = 'black';
     login_button.style.transform = 'scale(1)';
 
-    document.querySelector('form').style.backgroundColor = '#fcee54';
+    document.querySelector('div').style.backgroundColor = '#fcee54';
 
     document.querySelector('#email').classList.remove('white_placeholder');
     document.querySelector('#password').classList.remove('white_placeholder');
@@ -63,17 +63,22 @@ login_button.addEventListener('mouseleave', () => {
 
 document.querySelector('#container').querySelector(".login").addEventListener('click', event => {
     event.preventDefault();
-
+    
     const email = document.querySelector('#email').value;
     const pass = document.querySelector('#password').value;
 
     if (email && pass) {
         chrome.runtime.sendMessage({ message: "login", payload: { email, pass } }, function (response) {
-            console.log('girdi');
+            console.log('heyheyhey');
+            //alert(response)
             console.log(response);
             if (response === "success") {
+                alert('success');
                 console.log('sign in  success');
                window.location.replace('./popup-sign-out.html')
+            }else{
+                console.log(response);
+                alert('FAIL');
             }
         });
     } else {

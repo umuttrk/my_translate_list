@@ -1,7 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
+import { CLIENT_RENEG_LIMIT } from 'tls';
 import { client } from "./databasepg";
 const app = express();
-
+app.use(express.json());
 function check_mail(req: any, res: Response, next: NextFunction): any {
    console.log('authentication is checking');
    let creds = req.get('Authorization');
@@ -31,6 +32,10 @@ function check_password(req: any, res: Response, next: NextFunction): any {
    }
 }
 
+
+
+
+
 app.listen(3000, "0.0.0.0", (): void => {
    console.log("server is listening on port 3000");
 });
@@ -42,9 +47,35 @@ app.get('/login', check_mail, check_password, (req: Request, res: Response): any
 app.get('/logout', check_mail, (req: Request, res: Response): any => {
    console.log('logout api is called');
    return res.status(200).end();
+});
+
+app.post('/register', (req: Request, res: Response): any => {
+   const { first_name, last_name, email, pass } = req.body;
+   console.log(req.body);
+   if (first_name && last_name && email && pass) {
+      client.query(`insert into users(user_id,first_name,last_name,email,password) values (${Math.random() * 5000},'${first_name}','${last_name}','${email}','${pass}')`)
+         .then((response) => {
+            console.log('inserted');
+            return res.status(200).end();
+         }).catch(err => {
+           // console.log(err);
+            if (err.code === '23505') {
+               console.log('duplicate girildi');
+               return res.status(409).end();
+            }
+            return res.status(400).end();
+         });
+
+   } else {
+      console.log('bad req');
+      return res.status(400).end();
+   }
 
 
 });
+
+
+
 app.use((req: Request, res: Response, next: NextFunction): any => {
    res.status(404).send(`Route not found ${req.url}`);
    next();
